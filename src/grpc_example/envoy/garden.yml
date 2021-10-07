@@ -1,0 +1,25 @@
+kind: Module
+type: container
+name: grpc-example-server-envoy-container
+description: Envoy load balancer container
+include: ["*"]
+
+services:
+  - name: grpc-example-server-envoy
+    ports:
+      - name: http
+        containerPort: 8000
+    env:
+      ENVOY_LB_ALG: round_robin
+      SERVICE_NAME: grpc-example-server-service
+    healthCheck:
+      httpGet:
+        path: /healthz
+        port: http
+    ingresses:
+      - path: /grpc(/|$)(.*)
+        annotations:
+          "nginx.ingress.kubernetes.io/rewrite-target": "/$2"
+        port: http
+    dependencies:
+      - grpc-example-server

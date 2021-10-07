@@ -1,0 +1,60 @@
+kind: Module
+type: container
+name: grpc-example-server-container
+description: gRPC example server container
+exclude:
+  - target/**/*
+
+---
+
+kind: Module
+type: kubernetes
+name: grpc-example-server
+description: gRPC example server
+include: []
+serviceResource:
+  kind: Deployment
+  containerModule: grpc-example-server-container
+  name: grpc-example-server-service
+  containerName: grpc-example-server-service
+manifests:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: grpc-example-server-service
+      labels:
+        service: grpc-example-server-service
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          service: grpc-example-server-service
+      template:
+        metadata:
+          labels:
+            service: grpc-example-server-service
+        spec:
+          containers:
+          - name: grpc-example-server-container
+            args: []
+            image: ${modules.grpc-example-server-container.outputs.deployment-image-id}
+            imagePullPolicy: IfNotPresent
+            readinessProbe:
+              exec:
+                command: ["/code/target/release/grpc_example", "run", "--server", "http://localhost:50051", "--", "env", "hostname"]
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        service: grpc-example-server-service
+      name: grpc-example-server-service
+    spec:
+      type: ClusterIP
+      clusterIP: None
+      selector:
+        service: grpc-example-server-service
+      ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 50051

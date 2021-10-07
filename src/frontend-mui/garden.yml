@@ -1,0 +1,38 @@
+kind: Module
+type: container
+name: frontend-mui
+services:
+  - name: frontend-mui
+    ports:
+      - name: http
+        containerPort: 8000
+    healthCheck:
+      httpGet:
+        path: /healthz
+        port: http
+    ingresses:
+      - path: /client(/|$)(.*)
+        annotations:
+          "nginx.ingress.kubernetes.io/rewrite-target": "/$2"
+        port: http
+    dependencies:
+      - grpc-example-server
+
+
+# The template based alternative in case we need custom k8s manifests
+#kind: Module
+#type: templated
+#template: base-app
+#name: frontend-mui
+#inputs:
+#  port: 8080
+#  containerPort: 8000
+#  readinessProbeHttpGet: "/healthz"
+#  ingressPaths:
+#    - path: /
+#      pathType: ImplementationSpecific
+#      backend:
+#        service:
+#          name: frontend-mui
+#          port:
+#            number: 8000

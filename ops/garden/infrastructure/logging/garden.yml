@@ -1,0 +1,7 @@
+kind: Module
+name: logging
+description: EFK based logging infrastructure
+type: kubernetes
+disabled: false
+
+files: [elasticsearch.yml,kibana.yml,fluentd.yml]

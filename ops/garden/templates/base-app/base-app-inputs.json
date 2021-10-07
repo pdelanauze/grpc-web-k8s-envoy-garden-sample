@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "port": {
+      "type": "integer"
+    },
+    "containerPort": {
+      "type": "integer"
+    },
+    "readinessProbeHttpGet": {
+      "type": "string"
+    },
+    "ingressPaths": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "containerPort",
+    "readinessProbeHttpGet"
+  ]
+}

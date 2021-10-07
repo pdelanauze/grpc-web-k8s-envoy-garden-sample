@@ -1,0 +1,68 @@
+kind: ModuleTemplate
+name: base-app
+inputsSchemaPath: base-app-inputs.json
+modules:
+  - type: container
+    name: ${parent.name}-container
+    description: ${parent.name} description
+    exclude: ["node_modules/"]
+  - type: kubernetes
+    name: ${parent.name}-deployment
+    include: []
+    serviceResource:
+      kind: Deployment
+      containerModule: ${parent.name}-container
+      name: ${parent.name}-service
+      containerName: ${parent.name}-service
+    manifests:
+      - apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ${parent.name}-service
+          labels:
+            service: ${parent.name}-service
+        spec:
+          replicas: 2
+          selector:
+            matchLabels:
+              service: ${parent.name}-service
+          template:
+            metadata:
+              labels:
+                service: ${parent.name}-service
+            spec:
+              containers:
+                - name: ${parent.name}-container
+                  args: [ ]
+                  image: ${modules["${parent.name}-container"].outputs.deployment-image-id}
+                  imagePullPolicy: IfNotPresent
+                  readinessProbe:
+                    httpGet:
+                      path: ${inputs.readinessProbeHttpGet}
+                      port: ${inputs.containerPort}
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          labels:
+            service: ${parent.name}-service
+          name: ${parent.name}-service
+        spec:
+          type: ClusterIP
+          selector:
+            service: ${parent.name}-service
+          ports:
+            - name: http
+              port: ${inputs.port}
+              protocol: TCP
+              targetPort: ${inputs.containerPort}
+      - apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: ${parent.name}-ingress
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+        spec:
+          rules:
+            - host: grpc-web-k8s-envoy-garden-sample.local.app.garden
+              http:
+                paths: ${inputs.ingressPaths}

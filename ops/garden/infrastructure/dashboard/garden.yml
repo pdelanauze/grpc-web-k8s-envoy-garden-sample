@@ -1,0 +1,7 @@
+kind: Module
+name: dashboard
+description: Standard k8s dashboard
+type: kubernetes
+disabled: false
+
+files: [dashboard-v2.2.0.yml,admin-user.yml]

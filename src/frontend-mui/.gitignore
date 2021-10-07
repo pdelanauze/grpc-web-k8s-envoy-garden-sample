@@ -1,0 +1,5 @@
+public/client
+node_modules
+npm-debug.log
+proto/
+assets/proto
