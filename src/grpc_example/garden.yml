@@ -12,6 +12,13 @@ type: kubernetes
 name: grpc-example-server
 description: gRPC example server
 include: []
+devMode:
+  command: [watchexec, -w, ./src, -w, ./proto, -r, --, cargo, run, server, --server-listen-addr, 0.0.0.0:50051]
+  sync:
+    - source: ./
+      target: /code
+      exclude: [target]
+
 serviceResource:
   kind: Deployment
   containerModule: grpc-example-server-container
