@@ -17,6 +17,13 @@ services:
         port: http
     dependencies:
       - grpc-example-server
+    devMode:
+      command: [npm, run, dev]
+      sync:
+        - source: ./src/
+          target: /code/
+          exclude: [node_modules, public]
+          mode: one-way
 
 
 # The template based alternative in case we need custom k8s manifests
