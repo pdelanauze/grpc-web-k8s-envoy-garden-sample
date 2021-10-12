@@ -22,11 +22,9 @@ When making changes, you'll need to rerun `garden deploy` to see them (until hot
 ## TODO:
 
 - Fix passing arg1,2,3 in RpcExample.ts file (only sends the command right now)
-- Test hot reloads with frontend ui
 - gRPC header metadata example that could have JWT tokens, or figure out [how to get grpc-web authentication going](https://github.com/grpc/grpc-web/issues/351)
 - Generate & use self-signed certs (look up garden & cert-manager integration)
 - Figure out build process around proto files, right now have to copy proto directory manually on change
-- Remove nodemon from prod deployments for nodejs process -- need a more production'y / performant approach, nginx would be sufficient here
 
 ## Known issues:
 
